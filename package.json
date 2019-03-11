@@ -1,5 +1,5 @@
 {
-  "name": "universal-np-2",
+  "name": "universal-np",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -13,6 +13,11 @@
   },
   "main": "background.js",
   "dependencies": {
+    "body-parser": "^1.18.3",
+    "cors": "^2.8.5",
+    "express": "^4.16.4",
+    "get-window-by-name": "^1.0.2",
+    "playback": "git+https://github.com/totatoti/playback.git",
     "run-applescript": "^3.2.0",
     "vue": "^2.6.6",
     "vue-router": "^3.0.1",

@@ -1,19 +1,23 @@
-const { readFile, writeFile } = require('fs').promises;
 const { join } = require('path');
 const { platform } = require('os');
 const { exec } = require('child_process');
-import Registry from 'winreg';
+
+import { remote } from 'electron';
+
+const Registry = remote.require('winreg');
+const mkdirp = remote.require('mkdirp');
+const { readFile, writeFile } = remote.require('fs').promises;
 
 const installPaths = {
   chrome: {
     darwin:
-      '~/Library/Application Support/Google/Chrome/NativeMessagingHosts/com.flyinglawnmower.obsnp.json',
+      '~/Library/Application Support/Google/Chrome/NativeMessagingHosts/obsnp@flyinglawnmower.com',
     linux: ''
   },
   firefox: {
     darwin:
-      '~/Library/Application Support/Mozilla/NativeMessagingHosts/com.flyinglawnmower.obsnp.json.json',
-    linux: '~/.mozilla/native-messaging-hosts/<name>.json'
+      '~/Library/Application Support/Mozilla/NativeMessagingHosts/obsnp@flyinglawnmower.com',
+    linux: '~/.mozilla/native-messaging-hosts/obsnp@flyinglawnmower.com'
   }
 };
 
@@ -67,15 +71,25 @@ const getDefaultBrowserWindows = () => {
     const defaultBrowserRegKey = new Registry({
       hive: Registry.HKCU,
       key:
-        '\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FileExts\\.html\\UserChoice\\Progid'
+        '\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FileExts\\.html\\UserChoice'
     });
 
     defaultBrowserRegKey.values((err, items) => {
       if (err) {
         return reject(err);
       }
-      if (typeof browsers[items] !== 'undefined') {
-        return resolve(items);
+
+      const defaultBrowserRegItem = items.find((r) => r.name === 'ProgId');
+      if (defaultBrowserRegItem !== null) {
+        const browser = Object.keys(browsers).find((b) => {
+          if (defaultBrowserRegItem.value.startsWith(b)) {
+            return browsers[b];
+          }
+          return false;
+        });
+        if (browsers[browser] !== null) {
+          return resolve(browsers[browser]);
+        }
       }
 
       reject(new Error('Default browser not supported.'));
@@ -87,36 +101,140 @@ const getDefaultBrowserLinux = () => {
   // TBD
 };
 
-export const writeConfig = async ({ browser }) => {
-  if (platform() === 'darwin' || platform() === 'linux') {
-    await writeFile(
-      installPaths[browser][platform()],
-      await readFile(join(__static, '/com.flyinglawnmower.obsnp.json'))
+export const writeConfig = ({ browser }) => {
+  return new Promise(async (resolve, reject) => {
+    const fileNameEnding = () => {
+      if (platform() === 'macos' || platform() === 'linux') {
+        return `-${platform()}`;
+      } else if (platform() === 'win32') {
+        return '.exe';
+      }
+    };
+
+    const path = join(
+      remote.app.getPath('userData'),
+      'native-exes',
+      `native-helper${fileNameEnding()}`
     );
-  } else if (platform() === 'win32') {
-    await writeFile(
-      installPaths[browser].macos,
-      await readFile(join(__static, '/com.flyinglawnmower.obsnp.json'))
-    );
-  }
+
+    const baseConfig = () => {
+      return {
+        name: 'com.flyinglawnmower.obsnp',
+        description: 'Now Playing Helper',
+        path,
+        type: 'stdio'
+      };
+    };
+
+    const config = () => {
+      if (browser === 'chrome') {
+        return {
+          ...baseConfig(),
+          allowed_origins: [
+            'chrome-extension://aocghdlnkcebaipehcejjpeiijpdjldo/'
+          ]
+        };
+      } else if (browser === 'firefox') {
+        return {
+          ...baseConfig(),
+          allowed_extensions: ['obsnp@flyinglawnmower.com']
+        };
+      }
+    };
+
+    if (platform() !== 'win32') {
+      await writeFile(
+        installPaths[browser][platform()],
+        await JSON.stringify(config())
+      );
+    } else {
+      // add key to registry
+      if (browser === 'firefox') {
+        const regKey = new Registry({
+          hive: Registry.HKCU,
+          key: '\\Software\\Mozilla\\NativeMessagingHosts'
+        });
+
+        regKey.set(
+          'obsnp@flyinglawnmower.com',
+          Registry.REG_SZ,
+          path,
+          (err) => {
+            if (err) {
+              return reject(err);
+            }
+            resolve();
+          }
+        );
+      } else if (browser === 'chrome') {
+        const regKey = new Registry({
+          hive: Registry.HKCU,
+          key: '\\Software\\Google\\Chrome\\NativeMessagingHosts'
+        });
+
+        regKey.set(
+          'com.flyinglawnmower.obsnp',
+          Registry.REG_SZ,
+          path,
+          (err) => {
+            if (err) {
+              return reject(err);
+            }
+            resolve();
+          }
+        );
+      }
+    }
+  });
 };
 
-export const copyNativeExecutable = async () => {
+export const copyNativeExecutable = () => {
   const nativeHelperNames = {
-    darwin: 'native-helper-macos',
-    linux: 'native-helper-linux',
-    win32: 'native-helper.exe'
+    darwin: ['native-helper-macos'],
+    linux: ['native-helper-linux'],
+    win32: [
+      'native-helper.exe',
+      'libcurl-d.dll',
+      'LIBEAY32.dll',
+      'libssh2.dll',
+      'SSLEAY32.dll',
+      'zlibd1.dll'
+    ]
   };
 
-  const exeName = nativeHelperNames[platform()];
-  if (typeof exeName === 'undefined') {
-    throw new Error('Platform not supported.');
-  }
+  return new Promise((resolve, reject) => {
+    const exeName = nativeHelperNames[platform()];
+    if (typeof exeName === 'undefined') {
+      reject(new Error('Platform not supported.'));
+    }
 
-  await writeFile(
-    `./.config/${nativeHelperNames[platform()]}`,
-    await readFile(
-      join(__static, `/native-exes/${nativeHelperNames[platform()]}`)
-    )
-  );
+    const path = join(remote.app.getPath('userData'), 'native-exes');
+
+    mkdirp(path, async (err) => {
+      if (err) {
+        return reject(err);
+      }
+      Promise.all(
+        nativeHelperNames[platform()].map(async (f) => {
+          await writeFile(
+            join(path, f),
+            await readFile(join(__static, '/native-exes/', f))
+          );
+        })
+      );
+
+      resolve();
+    });
+  });
+};
+
+export const createDataDir = () => {
+  return new Promise((resolve, reject) => {
+    mkdirp(join(remote.app.getPath('userData'), 'data'), async (err) => {
+      if (err) {
+        return reject(err);
+      }
+      resolve();
+    });
+  });
 };
