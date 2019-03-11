@@ -3,6 +3,7 @@ import './plugins/vuetify';
 import App from './App.vue';
 import router from './router';
 import store from './store';
+import Mousetrap from 'mousetrap';
 
 // import { remote } from 'electron';
 
@@ -33,3 +34,10 @@ new Vue({
   store,
   render: (h) => h(App)
 }).$mount('#app');
+
+if (process.env.NODE_ENV === 'production') {
+  // temporary, since refreshing causes a few bugs atm, need to fix
+  Mousetrap.bind(['command+r', 'control+r'], () => {
+    return false;
+  });
+}
