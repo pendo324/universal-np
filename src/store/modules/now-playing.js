@@ -7,7 +7,6 @@ import { remote } from 'electron';
 // macos
 import runApplescript from 'run-applescript';
 // win32
-import { getWindowText } from 'get-window-by-name';
 const itunes = remote.require('playback');
 
 import {
@@ -142,31 +141,37 @@ const actions = {
       }
     } else if (platform() === 'win32') {
       if (state.player.value === 'Spotify') {
-        const processes = getWindowText('Spotify.exe').filter(
-          (t) => t.processTitle.length > 0
-        );
+        try {
+          const { getWindowText } = remote.require(`${'get-window-by-name'}`);
 
-        if (!processes.length) {
-          alert('Tool needs updating.');
-        }
+          const processes = getWindowText('Spotify.exe').filter(
+            (t) => t.processTitle.length > 0
+          );
 
-        if (processes[0].processTitle === 'Spotify') {
+          if (!processes.length) {
+            alert('Tool needs updating.');
+          }
+
+          if (processes[0].processTitle === 'Spotify') {
+            return await updateTrack(
+              { state, commit, getters },
+              { track: '', preview }
+            );
+            // return commit('SET_TRACK', {
+            //   track: ''
+            // });
+          }
+
           return await updateTrack(
             { state, commit, getters },
-            { track: '', preview }
+            { track: processes[0].processTitle, preview }
           );
-          // return commit('SET_TRACK', {
-          //   track: ''
+          // commit('SET_TRACK', {
+          //   track: processes[0].processTitle
           // });
+        } catch (e) {
+          console.log(e);
         }
-
-        return await updateTrack(
-          { state, commit, getters },
-          { track: processes[0].processTitle, preview }
-        );
-        // commit('SET_TRACK', {
-        //   track: processes[0].processTitle
-        // });
       } else if (state.player.value === 'iTunes') {
         itunes.currentTrack(async (track) => {
           if (typeof track !== 'undefined') {
@@ -205,7 +210,7 @@ const actions = {
   },
   async getDefaultBrowser({ commit }) {
     const browser = await getDefaultBrowser();
-    await writeConfig({ browser });
+    // await writeConfig({ browser });
     commit('SET_BROWSER', { browser });
   }
 };
