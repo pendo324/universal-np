@@ -58,7 +58,7 @@ export default {
     source: null
   }),
   computed: {
-    ...mapState('now-playing', ['player'])
+    ...mapState('now-playing', ['browser', 'player'])
   },
   methods: {
     noop() {},
@@ -76,15 +76,18 @@ export default {
     ...mapMutations('now-playing', { setTrack: 'SET_TRACK' })
   },
   async mounted() {
-    await this.getDefaultBrowser();
+    if (this.browser === null) {
+      await this.getDefaultBrowser();
+    }
     await createDataDir();
-    await copyNativeExecutable();
+    // await copyNativeExecutable();
 
     this.express.post('/track', (req, res) => {
       console.log(req.body);
       if (this.player.source === 'Web') {
         if (Object.prototype.hasOwnProperty.call(req.body, 'isPaused')) {
-          return this.setTrack({ track: null });
+          this.setTrack({ track: null });
+          return res.status(200).send();
         }
         const requiredKeys = ['song', 'webPlayer'];
         if (
@@ -94,10 +97,11 @@ export default {
         ) {
           if (this.player.text === req.body.webPlayer) {
             this.setTrack({ track: req.body.song });
+            return res.status(200).send();
           }
         }
       }
-      res.status(200).send();
+      return res.status(200).send();
     });
   }
 };
