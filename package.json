@@ -2,12 +2,14 @@
   "name": "universal-np",
   "version": "0.1.0",
   "private": true,
+  "author": "pendo324",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "electron:build": "vue-cli-service electron:build",
     "electron:serve": "vue-cli-service electron:serve",
+    "electron:generate-icon": "electron-icon-builder --input=./public/icon.png --output=./build --flatten",
     "postinstall": "electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps"
   },
@@ -16,14 +18,18 @@
     "body-parser": "^1.18.3",
     "cors": "^2.8.5",
     "express": "^4.16.4",
-    "get-window-by-name": "^1.0.2",
+    "mousetrap": "^1.6.3",
     "playback": "git+https://github.com/totatoti/playback.git",
     "run-applescript": "^3.2.0",
     "vue": "^2.6.6",
     "vue-router": "^3.0.1",
     "vuetify": "^1.5.5",
     "vuex": "^3.0.1",
+    "vuex-persistedstate": "^2.5.4",
     "winreg": "^1.2.4"
+  },
+  "optionalDependencies": {
+    "get-window-by-name": "^1.0.2"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.5.0",
@@ -32,6 +38,7 @@
     "@vue/eslint-config-prettier": "^4.0.1",
     "babel-eslint": "^10.0.1",
     "electron": "^4.0.0",
+    "electron-icon-builder": "^1.0.0",
     "eslint": "^5.8.0",
     "eslint-plugin-vue": "^5.0.0",
     "fibers": "^3.1.1",
