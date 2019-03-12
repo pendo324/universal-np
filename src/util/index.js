@@ -1,14 +1,15 @@
-const { join } = require('path');
-const { platform } = require('os');
-const { exec } = require('child_process');
-
 import { remote } from 'electron';
 
-const Registry = remote.require('winreg');
-const mkdirp = remote.require('mkdirp');
-const fs = require('fs');
-const readFile = require('util').promisify(fs.readFile);
-const writeFile = require('util').promisify(fs.writeFile);
+const mkdirp = require('mkdirp');
+const Registry = require('winreg');
+
+const { join } = remote.require('path');
+const { platform } = remote.require('os');
+const { exec } = remote.require('child_process');
+const fs = remote.require('fs');
+const util = remote.require('util');
+const readFile = util.promisify(fs.readFile);
+const writeFile = util.promisify(fs.writeFile);
 
 const installPaths = {
   chrome: {

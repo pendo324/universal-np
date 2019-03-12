@@ -28,23 +28,30 @@
       <v-container fluid fill-height>
         <v-layout justify-center align-center>
           <v-flex shrink>
-            <router-view/>
+            <router-view />
           </v-flex>
         </v-layout>
       </v-container>
     </v-content>
     <v-footer app fixed class="footer">
-      <a href="https://github.com/pendo324/universal-np" @click="openLinkInBrowser">GitHub</a>
-      <DividingDot/>
-      <a href="https://twitter.com/pendo324" @click="openLinkInBrowser">Twitter</a>
+      <a
+        href="https://github.com/pendo324/universal-np"
+        @click="openLinkInBrowser"
+      >
+        GitHub
+      </a>
+      <DividingDot />
+      <a href="https://twitter.com/pendo324" @click="openLinkInBrowser">
+        Twitter
+      </a>
     </v-footer>
   </v-app>
 </template>
 
 <script>
 import { mapActions, mapMutations, mapState } from 'vuex';
-import { copyNativeExecutable, createDataDir } from './util';
-import { remote, shell } from 'electron';
+import { createDataDir } from './util';
+import { shell } from 'electron';
 
 import DividingDot from '@/components/DividingDot';
 
@@ -80,10 +87,13 @@ export default {
       await this.getDefaultBrowser();
     }
     await createDataDir();
-    // await copyNativeExecutable();
 
     this.express.post('/track', (req, res) => {
-      if (typeof this.player !== undefined && this.player !== null && this.player.source === 'Web') {
+      if (
+        typeof this.player !== undefined &&
+        this.player !== null &&
+        this.player.source === 'Web'
+      ) {
         if (Object.prototype.hasOwnProperty.call(req.body, 'isPaused')) {
           this.setTrack({ track: null });
           return res.status(200).send();
@@ -104,8 +114,6 @@ export default {
     });
   }
 };
-
-// app.listen(47565);
 </script>
 
 <style lang="scss">

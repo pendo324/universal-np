@@ -3,13 +3,13 @@ import './plugins/vuetify';
 import App from './App.vue';
 import router from './router';
 import store from './store';
-import Mousetrap from 'mousetrap';
 
-// import { remote } from 'electron';
+import { remote } from 'electron';
 
-const express = require('express');
-const bodyParser = require('body-parser');
-const cors = require('cors');
+const Mousetrap = remote.require('mousetrap');
+const express = remote.require('express');
+const bodyParser = remote.require('body-parser');
+const cors = remote.require('cors');
 
 Vue.config.productionTip = false;
 
