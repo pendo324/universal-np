@@ -1,5 +1,5 @@
 const { platform } = require('os');
-const { writeFile } = require('fs').promises;
+const writeFile = require('util').promisify(require('fs').writeFile);
 const { join } = require('path');
 
 import { remote } from 'electron';
@@ -9,11 +9,7 @@ import runApplescript from 'run-applescript';
 // win32
 const itunes = remote.require('playback');
 
-import {
-  getDefaultBrowser,
-  copyNativeExecutable,
-  writeConfig
-} from './../../util';
+import { getDefaultBrowser } from './../../util';
 
 const state = {
   player: null,
@@ -210,7 +206,6 @@ const actions = {
   },
   async getDefaultBrowser({ commit }) {
     const browser = await getDefaultBrowser();
-    // await writeConfig({ browser });
     commit('SET_BROWSER', { browser });
   }
 };

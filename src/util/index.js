@@ -6,7 +6,9 @@ import { remote } from 'electron';
 
 const Registry = remote.require('winreg');
 const mkdirp = remote.require('mkdirp');
-const { readFile, writeFile } = remote.require('fs').promises;
+const fs = require('fs');
+const readFile = require('util').promisify(fs.readFile);
+const writeFile = require('util').promisify(fs.writeFile);
 
 const installPaths = {
   chrome: {
