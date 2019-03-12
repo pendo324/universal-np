@@ -61,9 +61,18 @@ export default {
     selectedPlayer: null,
     polling: false,
     players: [
-      { text: 'Spotify', source: 'Desktop', value: 'Spotify' },
+      { text: 'deezer', source: 'Web', value: 'deezer', webId: 'deezer' },
+      { text: 'Google Play', source: 'Web', value: 'Google Play', webId: 'Google Play' },
+      { text: 'Hype Machine', source: 'Web', value: 'hypem', webId: 'hypem' },
       { text: 'iTunes', source: 'Desktop', value: 'iTunes' },
-      { text: 'Spotify', source: 'Web', value: 'Spotify (Web)' }
+      { text: 'Mixcloud', source: 'Web', value: 'Mixcloud', webId: 'Mixcloud' },
+      { text: 'Pandora', source: 'Web', value: 'Pandora', webId: 'Pandora' },
+      { text: 'Plex', source: 'Web', value: 'Plex', webId: 'Plex' },
+      { text: 'Soundcloud', source: 'Web', value: 'Soundcloud', webId: 'Soundcloud' },
+      { text: 'Spotify', source: 'Desktop', value: 'Spotify' },
+      { text: 'Spotify', source: 'Web', value: 'Spotify (Web)', webId: 'Spotify' },
+      { text: 'tunein', source: 'Web', value: 'tunein', webId: 'tunein' },
+      { text: 'YouTube', source: 'Web', value: 'YouTube', webId: 'YouTube' }
     ],
     interval: null
   }),
