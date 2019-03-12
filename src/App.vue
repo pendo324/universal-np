@@ -83,8 +83,7 @@ export default {
     // await copyNativeExecutable();
 
     this.express.post('/track', (req, res) => {
-      console.log(req.body);
-      if (this.player.source === 'Web') {
+      if (typeof this.player !== undefined && this.player !== null && this.player.source === 'Web') {
         if (Object.prototype.hasOwnProperty.call(req.body, 'isPaused')) {
           this.setTrack({ track: null });
           return res.status(200).send();
