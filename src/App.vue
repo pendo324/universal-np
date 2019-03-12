@@ -34,7 +34,7 @@
       </v-container>
     </v-content>
     <v-footer app fixed class="footer">
-      <a href="https://github.com/pendo324" @click="openLinkInBrowser">GitHub</a>
+      <a href="https://github.com/pendo324/universal-np" @click="openLinkInBrowser">GitHub</a>
       <DividingDot/>
       <a href="https://twitter.com/pendo324" @click="openLinkInBrowser">Twitter</a>
     </v-footer>
