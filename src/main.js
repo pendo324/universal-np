@@ -7,7 +7,10 @@ import store from './store';
 import { remote } from 'electron';
 
 const Mousetrap = remote.require('mousetrap');
-const express = remote.require('express');
+const express =
+  process.env.NODE_ENV === 'production'
+    ? remote.require('express')
+    : require('express');
 const bodyParser = remote.require('body-parser');
 const cors = remote.require('cors');
 

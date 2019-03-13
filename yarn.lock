@@ -4651,12 +4651,14 @@ get-value@^2.0.3, get-value@^2.0.6:
   resolved "https://registry.yarnpkg.com/get-value/-/get-value-2.0.6.tgz#dc15ca1c672387ca76bd37ac0a395ba2042a2c28"
   integrity sha1-3BXKHGcjh8p2vTesCjlbogQqLCg=
 
-get-window-by-name@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/get-window-by-name/-/get-window-by-name-1.0.2.tgz#b46862915f3a7a6a732f0f509a70a0ff39ea3ac9"
-  integrity sha1-tGhikV86empzLw9QmnCg/znqOsk=
+get-window-by-name@1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/get-window-by-name/-/get-window-by-name-1.0.4.tgz#e85eab19f5af4679b9bedb3f19215650acf67ecd"
+  integrity sha512-3rP3M+kcwl6tWZ6I04ZJEJBwELZG/9lpEOMhNM4VNunaYWxUNW+7UGoeRf+8WxPqqeWrpdKeWZGBQYShgYvjSg==
   dependencies:
     bindings "^1.2.1"
+    cross-spawn "^6.0.5"
+    nan "^2.0.5"
 
 getpass@^0.1.1:
   version "0.1.7"
@@ -6603,7 +6605,7 @@ mute-stream@0.0.7:
   resolved "https://registry.yarnpkg.com/mute-stream/-/mute-stream-0.0.7.tgz#3075ce93bc21b8fab43e1bc4da7e8115ed1e7bab"
   integrity sha1-MHXOk7whuPq0PhvE2n6BFe0ee6s=
 
-nan@^2.9.2:
+nan@^2.0.5, nan@^2.9.2:
   version "2.12.1"
   resolved "https://registry.yarnpkg.com/nan/-/nan-2.12.1.tgz#7b1aa193e9aa86057e3c7bbd0ac448e770925552"
   integrity sha512-JY7V6lRkStKcKTvHO5NVSQRv+RV+FIL5pvDoLiAtSL9pKlC5x9PKQcZDsq7m4FO4d57mkhC6Z+QhAh3Jdk5JFw==

@@ -18,6 +18,7 @@
     "body-parser": "^1.18.3",
     "cors": "^2.8.5",
     "express": "^4.16.4",
+    "get-window-by-name": "1.0.4",
     "mousetrap": "^1.6.3",
     "playback": "git+https://github.com/totatoti/playback.git",
     "run-applescript": "^3.2.0",
@@ -27,9 +28,6 @@
     "vuex": "^3.0.1",
     "vuex-persistedstate": "^2.5.4",
     "winreg": "^1.2.4"
-  },
-  "optionalDependencies": {
-    "get-window-by-name": "^1.0.2"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.5.0",
