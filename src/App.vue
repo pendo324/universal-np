@@ -51,7 +51,7 @@
 <script>
 import { mapActions, mapMutations, mapState } from 'vuex';
 import { createDataDir } from './util';
-import { shell } from 'electron';
+import { remote, shell } from 'electron';
 
 import DividingDot from '@/components/DividingDot';
 
@@ -83,9 +83,9 @@ export default {
     ...mapMutations('now-playing', { setTrack: 'SET_TRACK' })
   },
   async mounted() {
-    if (this.browser === null) {
-      await this.getDefaultBrowser();
-    }
+    // if (this.browser === null) {
+    //   await this.getDefaultBrowser();
+    // }
     await createDataDir();
 
     this.express.post('/track', (req, res) => {
@@ -104,13 +104,21 @@ export default {
             Object.prototype.hasOwnProperty.call(req.body, r)
           )
         ) {
-          if (this.player.text === req.body.webPlayer) {
+          if (this.player.name === req.body.webPlayer) {
             this.setTrack({ track: req.body.song });
             return res.status(200).send();
           }
         }
       }
       return res.status(200).send();
+    });
+
+    window.addEventListener('beforeunload', () => {
+      this.server.close();
+    });
+
+    remote.getCurrentWindow().on('close', (e) => {
+      this.server.close();
     });
   }
 };
