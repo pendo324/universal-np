@@ -4,15 +4,10 @@ import App from './App.vue';
 import router from './router';
 import store from './store';
 
-import { remote } from 'electron';
-
-const Mousetrap = remote.require('mousetrap');
-const express =
-  process.env.NODE_ENV === 'production'
-    ? remote.require('express')
-    : require('express');
-const bodyParser = remote.require('body-parser');
-const cors = remote.require('cors');
+const Mousetrap = require('mousetrap');
+const express = require('express');
+const bodyParser = require('body-parser');
+const cors = require('cors');
 
 Vue.config.productionTip = false;
 
@@ -24,11 +19,11 @@ app.use(
 );
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.listen(47565);
+const server = app.listen(47565);
 
 Vue.mixin({
   data() {
-    return { express: app };
+    return { express: app, server };
   }
 });
 
