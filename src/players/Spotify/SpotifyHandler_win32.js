@@ -1,7 +1,14 @@
 import Handler from './../Handler';
-import { getWindowText } from 'get-window-by-name';
+// const { getWindowText } = require('get-window-by-name');
+
+import { remote } from 'electron';
+const { getWindowText } = remote.require('get-window-by-name');
 
 class SpotifyHandler extends Handler {
+  constructor() {
+    super({ os: 'win32', source: 'Desktop', id: 'Spotify', name: 'Spotify' });
+  }
+
   getTrack() {
     const processes = getWindowText('Spotify.exe').filter(
       (t) => t.processTitle.length > 0
@@ -11,7 +18,7 @@ class SpotifyHandler extends Handler {
       alert('Tool needs updating.');
     }
 
-    if (processes[0].processTitle === 'Spotify') {
+    if (processes[0].processTitle === 'Spotify' || processes[0].processTitle === 'Spotify Premium') {
       return '';
     }
 
