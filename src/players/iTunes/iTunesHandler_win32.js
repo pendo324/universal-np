@@ -1,19 +1,32 @@
 import Handler from './../Handler';
-import itunes from 'playback';
+import { remote } from 'electron';
+const { exec } = remote.require('child_process');
+const { join } = remote.require('path');
 
-const currentTrackAsync = () => {
-  return new Promise((resolve) => {
-    itunes.currentTrack(async (track) => {
-      if (typeof track !== 'undefined') {
-        if (typeof track.name !== 'undefined') {
-          resolve(`${track.name} - ${track.artist}`);
-        } else {
-          resolve('');
+import { copyWindowsScripts } from '@/util';
+const { getWindowText } = remote.require('get-window-by-name');
+
+(async () => {
+  await copyWindowsScripts();
+})();
+
+const getCurrentTrack = () => {
+  return new Promise((resolve, reject) => {
+    exec(
+      `cscript /NoLogo ${join(
+        remote.app.getPath('userData'),
+        'JScripts',
+        'getTrack_iTunes.js'
+      )}`,
+      (err, stdout) => {
+        if (err) {
+          return reject(err);
         }
-      } else {
-        resolve('');
+
+        const parsed = stdout.trim();
+        resolve(parsed);
       }
-    });
+    );
   });
 };
 
@@ -23,8 +36,21 @@ class iTunesHandler extends Handler {
   }
 
   async getTrack() {
-    const track = await currentTrackAsync();
-    return track;
+    try {
+      const processes = getWindowText('iTunes.exe');
+
+      if (processes.length > 0) {
+        const track = JSON.parse(await getCurrentTrack());
+        if (track.playerState === 'stopped') {
+          return 'Paused.';
+        }
+        return `${track.artist} - ${track.name}`;
+      }
+
+      return '';
+    } catch (e) {
+      return '';
+    }
   }
 }
 
