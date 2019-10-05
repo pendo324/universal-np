@@ -1,9 +1,4 @@
 class PlayerHandler {
-  os;
-  name;
-  source;
-  id;
-
   constructor({ name, os, source, id }) {
     this.name = name;
     this.os = os;
