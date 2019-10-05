@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-layout row wrap>
-      <v-flex xs12>
+      <!-- <v-flex xs12>
         <v-select
           :items="browsers"
           label="Browser"
@@ -14,7 +14,7 @@
           @click:clear="clearBrowser"
           :value="selectedBrowser"
         />
-      </v-flex>
+      </v-flex> -->
       <v-flex xs12>
         <v-layout row wrap>
           <v-flex xs8>

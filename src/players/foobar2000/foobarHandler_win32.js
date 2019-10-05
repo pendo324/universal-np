@@ -4,21 +4,23 @@ import Handler from './../Handler';
 import { remote } from 'electron';
 const { getWindowText } = remote.require('get-window-by-name');
 
-class SpotifyHandler extends Handler {
+class FoobarHandler extends Handler {
   constructor() {
-    super({ os: 'win32', source: 'Desktop', id: 'Spotify', name: 'Spotify' });
+    super({ os: 'win32', source: 'Desktop', id: 'foobar2000', name: 'foobar2000' });
   }
 
   getTrack() {
-    const processes = getWindowText('Spotify.exe').filter(
+    const processes = getWindowText('foobar2000.exe').filter(
       (t) => t.processTitle.length > 0
     );
 
     if (!processes.length) {
-      alert('Tool needs updating.');
+      // TODO: add better check/error handling here
+      // alert('Tool needs updating.');
+      return '';
     }
 
-    if (processes[0].processTitle === 'Spotify' || processes[0].processTitle === 'Spotify Premium') {
+    if (processes[0].processTitle === 'foobar2000') {
       return '';
     }
 
@@ -26,4 +28,4 @@ class SpotifyHandler extends Handler {
   }
 }
 
-export default SpotifyHandler;
+export default FoobarHandler;
