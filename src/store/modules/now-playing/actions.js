@@ -1,8 +1,7 @@
 // import { remote } from 'electron';
 const util = require('util');
 // const writeFile = util.promisify(remote.require('fs').writeFile);
-const { writeFile } = require('fs');
-const writeFilePromise = util.promisify(writeFile);
+const { writeFile } = require('fs').promises;
 
 import { getDefaultBrowser } from './../../../util';
 
@@ -16,13 +15,17 @@ const actions = {
           track
         });
         if (!preview) {
-          await writeFilePromise(state.saveLocation, getters.nowPlaying);
+          await writeFile(state.saveLocation, getters.nowPlaying, { encoding: 'utf8' });
         }
       } catch (e) {
         console.log(e);
         return commit('SET_TRACK', {
           track: ''
         });
+      }
+    } else if (state.player.source === 'Web') {
+      if (!preview) {
+        await writeFile(state.saveLocation, getters.nowPlaying);
       }
     }
   },

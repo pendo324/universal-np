@@ -108,7 +108,6 @@ export default {
     ...mapActions('now-playing', ['setTrack']),
     ...mapMutations('now-playing', { setPlayer: 'SET_PLAYER' }),
     async updatePlayer(newPlayer) {
-      console.log(newPlayer);
       if (typeof newPlayer !== 'undefined' && newPlayer !== null) {
         this.selectedPlayer = newPlayer.value;
         this.setPlayer(newPlayer);
@@ -122,16 +121,12 @@ export default {
     startButton() {
       if (!this.polling) {
         this.polling = true;
-        if (this.player.source === 'Desktop') {
-          this.interval = setInterval(async () => {
-            await this.setTrack();
-          }, 1000);
-        }
+        this.interval = setInterval(async () => {
+          await this.setTrack();
+        }, 1000);
       } else if (this.polling) {
         this.polling = false;
-        if (this.player.source === 'Desktop') {
-          clearInterval(this.interval);
-        }
+        clearInterval(this.interval);
       }
     },
     startPolling() {},
