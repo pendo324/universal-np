@@ -7,7 +7,7 @@ const { join } = remote.require('path');
 const { platform } = remote.require('os');
 const { exec } = remote.require('child_process');
 const fs = remote.require('fs');
-const util = remote.require('util');
+const util = require('util');
 const readFile = util.promisify(fs.readFile);
 const writeFile = util.promisify(fs.writeFile);
 
@@ -222,6 +222,30 @@ export const copyNativeExecutable = () => {
           await writeFile(
             join(path, f),
             await readFile(join(__static, '/native-exes/', f))
+          );
+        })
+      );
+
+      resolve();
+    });
+  });
+};
+
+export const copyWindowsScripts = () => {
+  return new Promise((resolve, reject) => {
+    const path = join(remote.app.getPath('userData'), 'JScripts');
+
+    mkdirp(path, async (err) => {
+      if (err) {
+        console.log(err);
+        return reject(err);
+      }
+
+      await Promise.all(
+        ['getTrack_iTunes.js'].map(async (f) => {
+          return await writeFile(
+            join(path, f),
+            await readFile(join(__static, '/JScripts/', f))
           );
         })
       );
