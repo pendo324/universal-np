@@ -32,6 +32,8 @@ Download the installer from the Releases page. Double click and away you go.
 
 To use the WebApps, you'll need install the companion extension from the web store. Here's a link to it: https://chrome.google.com/webstore/detail/universal-now-playing-com/lljahlkpnhdopaegadghfjhhkcpdlijg.
 
+Extension repo here: https://github.com/pendo324/universal-np-extension
+
 To use the WebApps you need to do the following:
 
 1. Open Universal Now Playing
