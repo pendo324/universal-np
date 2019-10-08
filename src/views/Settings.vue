@@ -16,20 +16,23 @@
         />
       </v-flex> -->
       <v-flex xs12>
-        <v-layout row wrap>
-          <v-flex xs8>
-            <v-text-field
-              label="Save Location"
-              placeholder="Pick Save Location"
-              :value="saveLocation"
-              disabled
-              outline
-            ></v-text-field>
-          </v-flex>
-          <v-flex xs4>
-            <v-btn color="info" @click="updateSaveLocation">Pick Save Location</v-btn>
-          </v-flex>
-        </v-layout>
+        <v-container>
+          <v-layout row wrap>
+            <v-flex xs7>
+              <v-text-field
+                label="Save Location"
+                placeholder="Pick Save Location"
+                :value="saveLocation"
+                disabled
+                outline
+                dense
+              ></v-text-field>
+            </v-flex>
+            <v-flex xs4 offset-xs1>
+              <v-btn color="info" large @click="updateSaveLocation">Pick Save Location</v-btn>
+            </v-flex>
+          </v-layout>
+        </v-container>
       </v-flex>
       <v-flex xs12>
         <v-text-field
@@ -38,7 +41,6 @@
           :value="prefix"
           @click:clear="clearPrefix"
           @input="updatePrefix"
-          box
           clearable
         />
         <v-text-field
@@ -47,7 +49,6 @@
           :value="suffix"
           @click:clear="clearSuffix"
           @input="updateSuffix"
-          box
           clearable
         />
       </v-flex>
