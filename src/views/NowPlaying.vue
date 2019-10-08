@@ -1,11 +1,9 @@
 <template>
   <v-container>
     <v-layout row wrap>
-      <v-flex xs12>
         <v-select
           :items="players"
           label="Player"
-          box
           clearable
           placeholder="Select a player"
           @change="updatePlayer"
@@ -13,16 +11,15 @@
           item-value="name"
           item-text="name"
           return-object
+          :value="player"
         >
           <template v-slot:item="{ item, tile }">
-            <v-list-tile-content>
-              <v-list-tile-title>{{ item.name }}</v-list-tile-title>
-              <v-list-tile-sub-title>{{ item.source }}</v-list-tile-sub-title>
-              <v-divider :key="item.value" inset></v-divider>
-            </v-list-tile-content>
+            <v-list-item-content>
+              <v-list-item-title>{{ item.name }}</v-list-item-title>
+              <v-list-item-subtitle>{{ item.source }}</v-list-item-subtitle>
+            </v-list-item-content>
           </template>
         </v-select>
-      </v-flex>
     </v-layout>
     <v-layout row wrap>
       <v-flex xs12>
@@ -57,10 +54,13 @@ import { desktop as desktopPlayers, web as webPlayers } from './../players';
 import { remote } from 'electron';
 const { platform } = remote.require('os');
 
+const availableDesktopPlayers = [];
+
 export default {
   data: () => ({
     selectedPlayer: null,
     polling: false,
+    playerValue: { name: null },
     // players: [
     //   { text: 'deezer', source: 'Web', value: 'deezer', webId: 'deezer' },
     //   {
@@ -109,6 +109,7 @@ export default {
     ...mapMutations('now-playing', { setPlayer: 'SET_PLAYER' }),
     async updatePlayer(newPlayer) {
       if (typeof newPlayer !== 'undefined' && newPlayer !== null) {
+        this.playerValue = newPlayer;
         this.selectedPlayer = newPlayer.value;
         this.setPlayer(newPlayer);
         this.setTrack({ preview: true });
@@ -133,7 +134,6 @@ export default {
     stopPolling() {}
   },
   async mounted() {
-    const availableDesktopPlayers = [];
     Object.keys(desktopPlayers).forEach((p) => {
       const player = desktopPlayers[p];
       const handler = player.supportedPlatforms.find((p) => p === platform());
@@ -159,12 +159,6 @@ export default {
 
       return 0;
     });
-
-    // const SpotifyHandler = require('./../players/Spotify');
-    // console.log(SpotifyHandler);
-    // const spotify = new SpotifyHandler.default();
-    // console.log(spotify);
-    // console.log(await spotify.getTrack());
   }
 };
 </script>

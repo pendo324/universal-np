@@ -1,29 +1,23 @@
 <template>
-  <v-app id="inspire" dark>
-    <v-navigation-drawer v-model="drawer" clipped fixed app>
+  <v-app id="inspire">
+    <v-navigation-drawer v-model="drawer" clipped app>
       <v-list dense>
-        <v-list-tile @click="gotoHome">
-          <v-list-tile-action>
-            <v-icon>dashboard</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>
-            <v-list-tile-title>Dashboard</v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
-        <v-list-tile @click="gotoSettings">
-          <v-list-tile-action>
-            <v-icon>settings</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>
-            <v-list-tile-title>Settings</v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
+        <v-list-item @click="gotoHome">
+          <v-list-item-content>
+            <v-list-item-title>Dashboard</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item @click="gotoSettings">
+          <v-list-item-content>
+            <v-list-item-title>Settings</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
       </v-list>
     </v-navigation-drawer>
-    <v-toolbar app fixed clipped-left>
-      <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
+    <v-app-bar app fixed dense clipped-left>
+      <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
       <v-toolbar-title>Universal Now Playing</v-toolbar-title>
-    </v-toolbar>
+    </v-app-bar>
     <v-content>
       <v-container fluid fill-height>
         <v-layout justify-center align-center>
@@ -33,7 +27,7 @@
         </v-layout>
       </v-container>
     </v-content>
-    <v-footer app fixed class="footer">
+    <v-footer app dark fixed class="footer">
       <a
         href="https://github.com/pendo324/universal-np"
         @click="openLinkInBrowser"
@@ -70,10 +64,14 @@ export default {
   methods: {
     noop() {},
     gotoSettings() {
-      this.$router.push({ name: 'settings' });
+      if (this.$route.name !== 'settings') {
+        this.$router.push({ name: 'settings' });
+      }
     },
     gotoHome() {
-      this.$router.push({ name: 'home' });
+      if (this.$route.name !== 'home') {
+        this.$router.push({ name: 'home' });
+      }
     },
     openLinkInBrowser(e) {
       e.preventDefault();
