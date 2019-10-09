@@ -24,6 +24,7 @@ Currently supported:
     * Pandora
     * Google Play (play.google.com)
     * Deezer
+    * Bandcamp
 
 Pull requests welcome to add player support. I could also use some Mac/Linux testers.
 
