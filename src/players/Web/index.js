@@ -104,3 +104,13 @@ export class YouTubeHandler extends Handler {
     });
   }
 }
+
+export class bandcampHandler extends Handler {
+  constructor() {
+    super({
+      ...defaultOptions,
+      id: 'bandcamp',
+      name: 'bandcamp'
+    });
+  }
+}
