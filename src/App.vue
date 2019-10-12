@@ -44,7 +44,6 @@
 
 <script>
 import { mapActions, mapMutations, mapState } from 'vuex';
-import { createDataDir } from './util';
 import { remote, shell } from 'electron';
 
 import DividingDot from '@/components/DividingDot';
@@ -77,15 +76,9 @@ export default {
       e.preventDefault();
       shell.openExternal(e.target.href);
     },
-    ...mapActions('now-playing', ['getDefaultBrowser']),
     ...mapMutations('now-playing', { setTrack: 'SET_TRACK' })
   },
   async mounted() {
-    // if (this.browser === null) {
-    //   await this.getDefaultBrowser();
-    // }
-    await createDataDir();
-
     this.express.post('/track', (req, res) => {
       if (
         typeof this.player !== undefined &&
