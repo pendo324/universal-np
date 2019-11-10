@@ -114,3 +114,23 @@ export class bandcampHandler extends Handler {
     });
   }
 }
+
+export class youtubeMusicHandler extends Handler {
+  constructor() {
+    super({
+      ...defaultOptions,
+      id: 'youtubeMusic',
+      name: 'YouTube Music'
+    });
+  }
+}
+
+export class tidalHandler extends Handler {
+  constructor() {
+    super({
+      ...defaultOptions,
+      id: 'tidal',
+      name: 'Tidal'
+    });
+  }
+}
