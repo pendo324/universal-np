@@ -43,10 +43,11 @@
 </template>
 
 <script>
-import { mapActions, mapMutations, mapState } from 'vuex';
+import { mapMutations, mapState } from 'vuex';
 import { remote, shell } from 'electron';
 
 import DividingDot from '@/components/DividingDot';
+import { createDefaultConfig } from '@/util';
 
 export default {
   name: 'universal-np',
@@ -58,7 +59,7 @@ export default {
     source: null
   }),
   computed: {
-    ...mapState('now-playing', ['browser', 'player'])
+    ...mapState('now-playing', ['browser', 'player', 'saveLocation'])
   },
   methods: {
     noop() {},
@@ -76,9 +77,19 @@ export default {
       e.preventDefault();
       shell.openExternal(e.target.href);
     },
-    ...mapMutations('now-playing', { setTrack: 'SET_TRACK' })
+    async setDefaultSaveLocation() {
+      this.setSaveLocation({ saveLocation: await createDefaultConfig() });
+    },
+    ...mapMutations('now-playing', {
+      setTrack: 'SET_TRACK',
+      setSaveLocation: 'SET_SAVE_LOCATION'
+    })
   },
   async mounted() {
+    if (this.saveLocation === null) {
+      await this.setDefaultSaveLocation();
+    }
+
     this.express.post('/track', (req, res) => {
       if (
         typeof this.player !== undefined &&
@@ -108,7 +119,7 @@ export default {
       this.server.close();
     });
 
-    remote.getCurrentWindow().on('close', (e) => {
+    remote.getCurrentWindow().on('close', (_e) => {
       this.server.close();
     });
   }

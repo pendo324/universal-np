@@ -1,25 +1,25 @@
 <template>
   <v-container>
     <v-layout row wrap>
-        <v-select
-          :items="players"
-          label="Player"
-          clearable
-          placeholder="Select a player"
-          @change="updatePlayer"
-          @click:clear="clearPlayer"
-          item-value="name"
-          item-text="name"
-          return-object
-          :value="player"
-        >
-          <template v-slot:item="{ item, tile }">
-            <v-list-item-content>
-              <v-list-item-title>{{ item.name }}</v-list-item-title>
-              <v-list-item-subtitle>{{ item.source }}</v-list-item-subtitle>
-            </v-list-item-content>
-          </template>
-        </v-select>
+      <v-select
+        :items="players"
+        label="Player"
+        clearable
+        placeholder="Select a player"
+        @change="updatePlayer"
+        @click:clear="clearPlayer"
+        item-value="name"
+        item-text="name"
+        return-object
+        :value="player"
+      >
+        <template v-slot:item="{ item }">
+          <v-list-item-content>
+            <v-list-item-title>{{ item.name }}</v-list-item-title>
+            <v-list-item-subtitle>{{ item.source }}</v-list-item-subtitle>
+          </v-list-item-content>
+        </template>
+      </v-select>
     </v-layout>
     <v-layout row wrap>
       <v-flex xs12>
@@ -56,10 +56,11 @@ const { platform } = remote.require('os');
 
 const availableDesktopPlayers = [];
 
+let interval = null;
+
 export default {
   data: () => ({
     selectedPlayer: null,
-    polling: false,
     playerValue: { name: null },
     // players: [
     //   { text: 'deezer', source: 'Web', value: 'deezer', webId: 'deezer' },
@@ -94,7 +95,7 @@ export default {
     interval: null
   }),
   computed: {
-    ...mapState('now-playing', ['track', 'player']),
+    ...mapState('now-playing', ['track', 'player', 'polling']),
     ...mapGetters('now-playing', ['webPlayer', 'nowPlaying']),
     trackText() {
       if (this.player === null) {
@@ -106,7 +107,11 @@ export default {
   },
   methods: {
     ...mapActions('now-playing', ['setTrack']),
-    ...mapMutations('now-playing', { setPlayer: 'SET_PLAYER' }),
+    ...mapMutations('now-playing', {
+      clearPolling: 'CLEAR_POLLING',
+      setPlayer: 'SET_PLAYER',
+      setPolling: 'SET_POLLING'
+    }),
     async updatePlayer(newPlayer) {
       if (typeof newPlayer !== 'undefined' && newPlayer !== null) {
         this.playerValue = newPlayer;
@@ -121,17 +126,21 @@ export default {
     },
     startButton() {
       if (!this.polling) {
-        this.polling = true;
-        this.interval = setInterval(async () => {
-          await this.setTrack();
-        }, 1000);
+        this.startPolling();
       } else if (this.polling) {
-        this.polling = false;
-        clearInterval(this.interval);
+        this.stopPolling();
       }
     },
-    startPolling() {},
-    stopPolling() {}
+    startPolling() {
+      this.setPolling();
+      interval = setInterval(async () => {
+        await this.setTrack();
+      }, 1000);
+    },
+    stopPolling() {
+      this.clearPolling();
+      clearInterval(interval);
+    }
   },
   async mounted() {
     Object.keys(desktopPlayers).forEach((p) => {

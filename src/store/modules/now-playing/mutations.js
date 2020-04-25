@@ -1,13 +1,11 @@
-import { remote } from 'electron';
-const { join } = remote.require('path');
-
 export const state = {
   player: null,
   track: null,
   browser: null,
-  saveLocation: join(remote.app.getPath('userData'), 'data', 'nowplaying.txt'),
+  saveLocation: null,
   prefix: '',
-  suffix: ''
+  suffix: '',
+  polling: false
 };
 
 const mutations = {
@@ -40,6 +38,12 @@ const mutations = {
   },
   CLEAR_SUFFIX(state) {
     state.suffix = '';
+  },
+  SET_POLLING(state) {
+    state.polling = true;
+  },
+  CLEAR_POLLING(state) {
+    state.polling = false;
   }
 };
 

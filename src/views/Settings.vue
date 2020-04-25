@@ -29,7 +29,9 @@
               ></v-text-field>
             </v-flex>
             <v-flex xs4 offset-xs1>
-              <v-btn color="info" large @click="updateSaveLocation">Pick Save Location</v-btn>
+              <v-btn color="info" large @click="updateSaveLocation">
+                Pick Save Location
+              </v-btn>
             </v-flex>
           </v-layout>
         </v-container>
@@ -107,7 +109,7 @@ export default {
           properties: ['openFile', 'createDirectory', 'promptToCreate'],
           defaultPath: this.saveLocation
         },
-        (filePaths, bookmark) => {
+        (filePaths, _bookmark) => {
           if (typeof filePaths !== 'undefined') {
             this.setSaveLocation({ saveLocation: filePaths[0] });
           }
@@ -124,10 +126,8 @@ export default {
         this.setSuffix({ suffix: value });
       }
     }
-  },
-  mounted() {}
+  }
 };
 </script>
 
-<style>
-</style>
+<style></style>
