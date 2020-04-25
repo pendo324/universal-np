@@ -1,8 +1,5 @@
 import Handler from './../Handler';
-// const { getWindowText } = require('get-window-by-name');
-
-import { remote } from 'electron';
-const { getWindowText } = remote.require('get-window-by-name');
+import { getProcessByName } from '@pendo324/get-process-by-name';
 
 const baseTitle = 'Media Player Classic Qute Theater';
 
@@ -11,9 +8,9 @@ class FoobarHandler extends Handler {
     super({ os: 'win32', source: 'Desktop', id: 'mpcQt', name: 'mpc-qt' });
   }
 
-  getTrack() {
-    const processes = getWindowText('mpc-qt.exe').filter(
-      (t) => t.processTitle.length > 0
+  async getTrack() {
+    const processes = (await getProcessByName('mpc-qt.exe')).filter(
+      (t) => t.windowTitle && t.windowTitle.length > 0
     );
 
     if (!processes.length) {
@@ -22,11 +19,11 @@ class FoobarHandler extends Handler {
       return '';
     }
 
-    if (processes[0].processTitle === baseTitle) {
+    if (processes[0].windowTitle === baseTitle) {
       return '';
     }
 
-    return processes[0].processTitle.split(`${baseTitle} - `)[1];
+    return processes[0].windowTitle.split(`${baseTitle} - `)[1];
   }
 }
 

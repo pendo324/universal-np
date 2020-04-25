@@ -5,11 +5,15 @@ const { writeFile } = require('fs').promises;
 
 const actions = {
   async setTrack(context, { preview } = { preview: false }) {
-    const { state, commit, getters } = context;
-    if (state.player !== null) {
-      if (state.player.source === 'Desktop') {
+    const {
+      state: { player, saveLocation },
+      commit,
+      getters: { nowPlaying }
+    } = context;
+    if (player !== null) {
+      if (player.source === 'Desktop') {
         try {
-          const track = await state.player.getTrack();
+          const track = await player.getTrack();
           commit('SET_TRACK', {
             track
           });
@@ -24,7 +28,7 @@ const actions = {
             track: ''
           });
         }
-      } else if (state.player.source === 'Web') {
+      } else if (player.source === 'Web') {
         if (!preview) {
           await writeFile(state.saveLocation, getters.nowPlaying);
         }

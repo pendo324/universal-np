@@ -1,28 +1,31 @@
 import Handler from './../Handler';
-// const { getWindowText } = require('get-window-by-name');
-
-import { remote } from 'electron';
-const { getWindowText } = remote.require('get-window-by-name');
+import { getProcessByName } from '@pendo324/get-process-by-name';
 
 class SpotifyHandler extends Handler {
   constructor() {
     super({ os: 'win32', source: 'Desktop', id: 'Spotify', name: 'Spotify' });
   }
 
-  getTrack() {
-    const processes = getWindowText('Spotify.exe').filter(
-      (t) => t.processTitle.length > 0
+  async getTrack() {
+    const processes = (await getProcessByName('Spotify.exe')).filter(
+      (t) =>
+        t.windowTitle &&
+        t.windowTitle.length > 0 &&
+        t.windowTitle !== 'AngleHiddenWindow'
     );
 
-    if (!processes.length) {
+    if (!processes.length === 0) {
       alert('Tool needs updating.');
     }
 
-    if (processes[0].processTitle === 'Spotify' || processes[0].processTitle === 'Spotify Premium') {
+    if (
+      processes[0].windowTitle === 'Spotify' ||
+      processes[0].windowTitle === 'Spotify Premium'
+    ) {
       return '';
     }
 
-    return processes[0].processTitle;
+    return processes[0].windowTitle;
   }
 }
 

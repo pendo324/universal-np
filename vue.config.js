@@ -3,7 +3,7 @@ module.exports = {
   transpileDependencies: ['vuetify'],
   pluginOptions: {
     electronBuilder: {
-      externals: ['get-window-by-name', 'body-parser'],
+      externals: ['body-parser'],
       builderOptions: {
         win: {
           requestedExecutionLevel: 'highestAvailable'
