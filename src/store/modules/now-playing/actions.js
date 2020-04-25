@@ -1,7 +1,4 @@
-// import { remote } from 'electron';
-// const util = require('util');
-// const writeFile = util.promisify(remote.require('fs').writeFile);
-const { writeFile } = require('fs').promises;
+const { writeFileSync } = require('fs');
 
 const actions = {
   async setTrack(context, { preview } = { preview: false }) {
@@ -18,7 +15,7 @@ const actions = {
             track
           });
           if (!preview) {
-            await writeFile(state.saveLocation, getters.nowPlaying, {
+            writeFileSync(saveLocation, nowPlaying, {
               encoding: 'utf8'
             });
           }
@@ -30,7 +27,7 @@ const actions = {
         }
       } else if (player.source === 'Web') {
         if (!preview) {
-          await writeFile(state.saveLocation, getters.nowPlaying);
+          writeFileSync(saveLocation, nowPlaying);
         }
       }
     }

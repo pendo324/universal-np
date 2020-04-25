@@ -31,3 +31,30 @@ export const copyWindowsScripts = () => {
     });
   });
 };
+
+export const createDefaultConfig = () => {
+  return new Promise((resolve, reject) => {
+    const dataDirPath = join(remote.app.getPath('userData'), 'data');
+    const defaultConfigFilePath = join(dataDirPath, 'nowplaying.txt');
+
+    mkdirp(dataDirPath, async (e) => {
+      if (e) {
+        console.log(e);
+        return reject(e);
+      }
+
+      try {
+        await writeFile(defaultConfigFilePath, '', {
+          flag: 'wx'
+        });
+      } catch (e) {
+        console.log(
+          "Couldn't write default config file. It probably already exists: ",
+          e
+        );
+      } finally {
+        resolve(defaultConfigFilePath);
+      }
+    });
+  });
+};
