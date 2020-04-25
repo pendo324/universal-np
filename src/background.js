@@ -1,6 +1,6 @@
 'use strict';
 
-import { app, protocol, BrowserWindow } from 'electron';
+import { app, protocol, BrowserWindow, Menu, Tray } from 'electron';
 import {
   createProtocol,
   installVueDevtools
@@ -10,6 +10,16 @@ const isDevelopment = process.env.NODE_ENV !== 'production';
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win;
+
+// since the close button doesn't actually close the application, we need to keep track
+// of when the application should actually close
+let isQuitting = false;
+
+app.on('before-quit', () => {
+  isQuitting = true;
+});
+
+app.allowRendererProcessReuse = true;
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
@@ -23,7 +33,8 @@ function createWindow() {
     height: 600,
     webPreferences: {
       nodeIntegration: true
-    }
+    },
+    darkTheme: true
   });
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
@@ -36,9 +47,20 @@ function createWindow() {
     win.loadURL('app://./index.html');
   }
 
+  win.on('close', function(event) {
+    if (!isQuitting) {
+      event.preventDefault();
+      win.hide();
+    }
+
+    return false;
+  });
+
   win.on('closed', () => {
     win = null;
   });
+
+  return win;
 }
 
 // Quit when all windows are closed.
@@ -61,6 +83,7 @@ app.on('activate', () => {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
+let tray = null;
 app.on('ready', async () => {
   if (isDevelopment && !process.env.IS_TEST) {
     // Install Vue Devtools
@@ -69,13 +92,39 @@ app.on('ready', async () => {
     // Electron will not launch with Devtools extensions installed on Windows 10 with dark mode
     // If you are not using Windows 10 dark mode, you may uncomment these lines
     // In addition, if the linked issue is closed, you can upgrade electron and uncomment these lines
-    // try {
-    //   await installVueDevtools()
-    // } catch (e) {
-    //   console.error('Vue Devtools failed to install:', e.toString())
-    // }
+    try {
+      await installVueDevtools()
+    } catch (e) {
+      console.error('Vue Devtools failed to install:', e.toString())
+    }
   }
-  createWindow();
+
+  tray = new Tray('./public/icon.png');
+  tray.setToolTip('Universal Now Playing');
+
+  const mainWindow = createWindow();
+
+  const contextMenu = Menu.buildFromTemplate([
+    {
+      label: 'Universal NP',
+      type: 'normal',
+      enabled: false
+    },
+    {
+      label: 'Quit',
+      type: 'normal',
+      click() {
+        isQuitting = true;
+        app.quit();
+      }
+    }
+  ]);
+
+  tray.setContextMenu(contextMenu);
+
+  tray.on('click', () => {
+    mainWindow.show();
+  });
 });
 
 // Exit cleanly on request from parent process in development mode.
