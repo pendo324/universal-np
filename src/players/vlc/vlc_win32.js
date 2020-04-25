@@ -1,8 +1,5 @@
 import Handler from './../Handler';
-// const { getWindowText } = require('get-window-by-name');
-
-import { remote } from 'electron';
-const { getWindowText } = remote.require('get-window-by-name');
+import { getProcessByName } from '@pendo324/get-process-by-name';
 
 const baseTitle = 'VLC media player';
 
@@ -11,9 +8,9 @@ class VlcHandler extends Handler {
     super({ os: 'win32', source: 'Desktop', id: 'vlc', name: 'vlc' });
   }
 
-  getTrack() {
-    const processes = getWindowText('vlc.exe').filter(
-      (t) => t.processTitle.length > 0
+  async getTrack() {
+    const processes = (await getProcessByName('vlc.exe')).filter(
+      (t) => t.windowTitle && t.windowTitle.length > 0
     );
 
     if (!processes.length) {
@@ -22,11 +19,11 @@ class VlcHandler extends Handler {
       return '';
     }
 
-    if (processes[0].processTitle === baseTitle) {
+    if (processes[0].windowTitle === baseTitle) {
       return '';
     }
 
-    return processes[0].processTitle.split(` - ${baseTitle}`)[0];
+    return processes[0].windowTitle.split(` - ${baseTitle}`)[0];
   }
 }
 

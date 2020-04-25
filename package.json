@@ -15,11 +15,11 @@
   "main": "background.js",
   "dependencies": {
     "@mdi/font": "^3.6.95",
+    "@pendo324/get-process-by-name": "^1.0.1",
     "body-parser": "^1.19.0",
     "core-js": "^2.6.5",
     "cors": "^2.8.5",
     "express": "^4.17.1",
-    "get-window-by-name": "2.0.0",
     "mousetrap": "^1.6.3",
     "roboto-fontface": "*",
     "run-applescript": "^3.2.0",

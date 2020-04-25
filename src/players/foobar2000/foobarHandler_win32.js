@@ -1,17 +1,19 @@
 import Handler from './../Handler';
-// const { getWindowText } = require('get-window-by-name');
-
-import { remote } from 'electron';
-const { getWindowText } = remote.require('get-window-by-name');
+import { getProcessByName } from '@pendo324/get-process-by-name';
 
 class FoobarHandler extends Handler {
   constructor() {
-    super({ os: 'win32', source: 'Desktop', id: 'foobar2000', name: 'foobar2000' });
+    super({
+      os: 'win32',
+      source: 'Desktop',
+      id: 'foobar2000',
+      name: 'foobar2000'
+    });
   }
 
-  getTrack() {
-    const processes = getWindowText('foobar2000.exe').filter(
-      (t) => t.processTitle.length > 0
+  async getTrack() {
+    const processes = (await getProcessByName('foobar2000.exe')).filter(
+      (t) => t.windowTitle && t.windowTitle.length > 0
     );
 
     if (!processes.length) {
@@ -20,11 +22,11 @@ class FoobarHandler extends Handler {
       return '';
     }
 
-    if (processes[0].processTitle === 'foobar2000') {
+    if (processes[0].windowTitle === 'foobar2000') {
       return '';
     }
 
-    return processes[0].processTitle;
+    return processes[0].windowTitle;
   }
 }
 
