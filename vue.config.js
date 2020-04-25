@@ -4,9 +4,10 @@ module.exports = {
   pluginOptions: {
     electronBuilder: {
       externals: ['body-parser'],
+      nodeIntegration: true,
       builderOptions: {
         win: {
-          requestedExecutionLevel: 'highestAvailable'
+          publisherName: 'Flying Lawnmower Development'
         }
       }
     }

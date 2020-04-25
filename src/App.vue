@@ -127,6 +127,10 @@ export default {
 </script>
 
 <style lang="scss">
+html {
+  overflow-y: auto !important;
+}
+
 .footer {
   padding-left: 10px;
   // a:not(:first-child) {
