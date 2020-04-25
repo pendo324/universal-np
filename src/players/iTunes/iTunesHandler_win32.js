@@ -4,7 +4,7 @@ const { exec } = remote.require('child_process');
 const { join } = remote.require('path');
 
 import { copyWindowsScripts } from '@/util';
-const { getWindowText } = remote.require('get-window-by-name');
+import { getProcessByName } from '@pendo324/get-process-by-name';
 
 (async () => {
   await copyWindowsScripts();
@@ -13,10 +13,10 @@ const { getWindowText } = remote.require('get-window-by-name');
 const getCurrentTrack = () => {
   return new Promise((resolve, reject) => {
     exec(
-      `cscript /NoLogo ${join(
+      `powershell ${join(
         remote.app.getPath('userData'),
-        'JScripts',
-        'getTrack_iTunes.js'
+        'windows_runtime_scripts',
+        'getTrack_iTunes.ps1'
       )}`,
       (err, stdout) => {
         if (err) {
@@ -37,7 +37,7 @@ class iTunesHandler extends Handler {
 
   async getTrack() {
     try {
-      const processes = getWindowText('iTunes.exe');
+      const processes = await getProcessByName('iTunes.exe');
 
       if (processes.length > 0) {
         const track = JSON.parse(await getCurrentTrack());
