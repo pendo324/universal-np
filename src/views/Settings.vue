@@ -62,7 +62,7 @@
 import { remote } from 'electron';
 import { mapState, mapMutations } from 'vuex';
 
-const { dialog } = remote.require('electron');
+const { dialog } = remote;
 
 export default {
   data() {
@@ -102,19 +102,18 @@ export default {
     clearBrowser() {
       this.setBrowser({ browser: null });
     },
-    updateSaveLocation() {
-      dialog.showOpenDialog(
-        {
-          title: 'Save Location',
-          properties: ['openFile', 'createDirectory', 'promptToCreate'],
-          defaultPath: this.saveLocation
-        },
-        (filePaths, _bookmark) => {
-          if (typeof filePaths !== 'undefined') {
-            this.setSaveLocation({ saveLocation: filePaths[0] });
-          }
+    async updateSaveLocation() {
+      const { canceled, filePaths } = await dialog.showOpenDialog({
+        title: 'Save Location',
+        properties: ['openFile', 'createDirectory', 'promptToCreate'],
+        defaultPath: this.saveLocation
+      });
+
+      if (!canceled) {
+        if (typeof filePaths !== 'undefined') {
+          this.setSaveLocation({ saveLocation: filePaths[0] });
         }
-      );
+      }
     },
     updatePrefix(value) {
       if (typeof value !== 'undefined' && value !== null) {
