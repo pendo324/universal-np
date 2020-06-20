@@ -22,11 +22,19 @@ class FoobarHandler extends Handler {
       return '';
     }
 
-    if (processes[0].windowTitle === 'foobar2000') {
+    const windowTitle = processes[0].windowTitle;
+
+    if (windowTitle === 'foobar2000') {
       return '';
     }
 
-    return processes[0].windowTitle;
+    // remove the default [foobar2000] from the end of the window title
+    const defaultSuffix = '[foobar2000]';
+    if (windowTitle.endsWith(defaultSuffix)) {
+      return windowTitle.split(defaultSuffix)[0].trim();
+    }
+
+    return windowTitle;
   }
 }
 

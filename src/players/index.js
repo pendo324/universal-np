@@ -8,6 +8,7 @@ import * as mpcQt from './mpc-qt';
 import * as mpcHc from './mpc-hc';
 import * as mpv from './mpv';
 import * as vlc from './vlc';
+import * as gpmdp from './gpmdp';
 
 import * as Web from './Web';
 
@@ -18,7 +19,8 @@ export const desktop = {
   mpcQt,
   mpcHc,
   mpv,
-  vlc
+  vlc,
+  gpmdp
 };
 
 export const web = {
