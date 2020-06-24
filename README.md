@@ -15,6 +15,8 @@ Currently supported:
     * MPC-HC
     * MPC-QT (rip)
     * foobar2000
+    * mpv
+    * Google Play Music Desktop Player
   - WebApps:
     * Mixcloud
     * Spotify web player (play.spotify.com)
@@ -25,6 +27,10 @@ Currently supported:
     * Google Play (play.google.com)
     * Deezer
     * Bandcamp
+    * Hype Machine
+    * Plex
+    * YouTube Music
+    * Tidal
 
 Pull requests welcome to add player support. I could also use some Mac/Linux testers.
 
